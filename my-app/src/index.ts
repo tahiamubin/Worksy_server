@@ -1,11 +1,15 @@
 import express, { Request, Response } from "express";
 import dotenv from "dotenv";
-const { MongoClient, ServerApiVersion } = require("mongodb");
-const uri = process.env.MONGODB_URI;
-dotenv.config();
+
+dotenv.config()
+
+
 
 const app = express();
 const port = process.env.PORT || 5000;
+
+import { MongoClient, ServerApiVersion } from "mongodb";
+const uri = process.env.MONGODB_URI;
 
 app.use(express.json());
 
@@ -19,9 +23,8 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
-    
     await client.connect();
- 
+
     await client.db("admin").command({ ping: 1 });
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!",
