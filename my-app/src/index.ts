@@ -1,14 +1,12 @@
 import express, { Request, Response } from "express";
 import dotenv from "dotenv";
 
-dotenv.config()
-
-
+dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 5000;
 
-import { MongoClient, ServerApiVersion } from "mongodb";
+import { Collection, MongoClient, ServerApiVersion } from "mongodb";
 const uri = process.env.MONGODB_URI;
 
 app.use(express.json());
@@ -21,9 +19,27 @@ const client = new MongoClient(uri, {
   },
 });
 
+let projectCollection: Collection<Document>;
 async function run() {
   try {
-    await client.connect();
+    // await client.connect();
+
+    const database = client.db("worksy");
+    const projectCollection = database.collection("Projects");
+
+    // project
+
+    app.post("/project", async (req: Request, res: Response) => {
+      try {
+        const data = await req.body;
+        const result = await projectCollection.insertOne(data);
+        res.send(result);
+      } catch (error) {
+        const message =
+          error instanceof Error ? error.message : "Unknown error";
+        res.status(500).json({ error: message });
+      }
+    });
 
     await client.db("admin").command({ ping: 1 });
     console.log(
