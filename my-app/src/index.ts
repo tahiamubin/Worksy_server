@@ -1,17 +1,15 @@
 import express, { Request, Response } from "express";
 import dotenv from "dotenv";
 
-
 dotenv.config();
-
 
 const app = express();
 const port = process.env.PORT || 8000;
 
-import cors from 'cors';
+import cors from "cors";
 app.use(cors({ origin: process.env.FRONTEND }));
 
-import { Collection, MongoClient, ServerApiVersion } from "mongodb";
+import { Collection, MongoClient, ObjectId, ServerApiVersion } from "mongodb";
 const uri = process.env.MONGODB_URI;
 
 app.use(express.json());
@@ -39,6 +37,22 @@ async function run() {
         const data = await req.body;
         const result = await projectCollection.insertOne(data);
         res.send(result);
+      } catch (error) {
+        const message =
+          error instanceof Error ? error.message : "Unknown error";
+        res.status(500).json({ error: message });
+      }
+    });
+
+    app.get("/project/:id", async (req: Request, res: Response) => {
+      try {
+        
+        const id = req.params.id;
+        const query = {
+          _id: new ObjectId(id),
+        };
+        const result = await projectCollection.findOne(query);
+        res.json(result);
       } catch (error) {
         const message =
           error instanceof Error ? error.message : "Unknown error";
