@@ -44,14 +44,9 @@ async function run() {
       }
     });
 
-    app.get("/project/:id", async (req: Request, res: Response) => {
+    app.get("/project", async (req: Request, res: Response) => {
       try {
-        
-        const id = req.params.id;
-        const query = {
-          _id: new ObjectId(id),
-        };
-        const result = await projectCollection.findOne(query);
+        const result = await projectCollection.find().toArray();
         res.json(result);
       } catch (error) {
         const message =
