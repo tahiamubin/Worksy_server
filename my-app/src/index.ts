@@ -11,6 +11,7 @@ app.use(cors({ origin: process.env.FRONTEND }));
 
 import { Collection, MongoClient, ObjectId, ServerApiVersion } from "mongodb";
 const uri = process.env.MONGODB_URI;
+if(!uri) throw new Error("MongoDb is not undefine")
 
 app.use(express.json());
 
@@ -30,9 +31,16 @@ async function run() {
     const database = client.db("worksy");
     const projectCollection = database.collection("Projects");
 
+    interface Project {
+      [key:string] : unknown
+    }
+
     // project
 
-    app.post("/project", async (req: Request, res: Response) => {
+
+
+    // Request<Params, ResBody, ReqBody>
+    app.post("/project", async (req: Request<{}, {}, Project>, res: Response) => {
       try {
         const data = await req.body;
         const result = await projectCollection.insertOne(data);
@@ -48,6 +56,22 @@ async function run() {
       try {
         const result = await projectCollection.find().toArray();
         res.json(result);
+      } catch (error) {
+        const message =
+          error instanceof Error ? error.message : "Unknown error";
+        res.status(500).json({ error: message });
+      }
+    });  
+
+    app.patch("/project/:id", async (req: Request<{id: string} , {}, Project>, res: Response) => {
+      try {
+        const { id } =  req.params;
+        const updatedData = await req.body;
+        const result = await projectCollection.updateOne(
+          { _id: new ObjectId(id) },
+          { $set: updatedData },
+        );
+        res.json(result)
       } catch (error) {
         const message =
           error instanceof Error ? error.message : "Unknown error";
