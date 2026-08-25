@@ -11,7 +11,7 @@ app.use(cors({ origin: process.env.FRONTEND }));
 
 import { Collection, MongoClient, ObjectId, ServerApiVersion } from "mongodb";
 const uri = process.env.MONGODB_URI;
-if(!uri) throw new Error("MongoDb is not undefine")
+// if(!uri) throw new Error("MongoDb is not undefine")
 
 app.use(express.json());
 
@@ -26,7 +26,7 @@ const client = new MongoClient(uri, {
 let projectCollection: Collection<Document>;
 async function run() {
   try {
-    // await client.connect();
+    await client.connect();
 
     const database = client.db("worksy");
     const projectCollection = database.collection("Projects");
