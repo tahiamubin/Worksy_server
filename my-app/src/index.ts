@@ -40,17 +40,17 @@ async function run() {
 
 
     // Request<Params, ResBody, ReqBody>
-    app.post("/project", async (req: Request<{}, {}, Project>, res: Response) => {
-      try {
-        const data = await req.body;
-        const result = await projectCollection.insertOne(data);
-        res.send(result);
-      } catch (error) {
-        const message =
-          error instanceof Error ? error.message : "Unknown error";
-        res.status(500).json({ error: message });
-      }
-    });
+    // app.post("/project", async (req: Request<{}, {}, Project>, res: Response) => {
+    //   try {
+    //     const data = await req.body;
+    //     const result = await projectCollection.insertOne(data);
+    //     res.send(result);
+    //   } catch (error) {
+    //     const message =
+    //       error instanceof Error ? error.message : "Unknown error";
+    //     res.status(500).json({ error: message });
+    //   }
+    // });
 
     app.get("/project", async (req: Request, res: Response) => {
       try {
